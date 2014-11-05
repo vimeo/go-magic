@@ -25,3 +25,7 @@ go get github.com/vimeo/go-magic/magic
 - Get MIME type with either one of:
     - magic.MimeFromFile(filename)
     - magic.MimeFromBytes(data)
+
+###API Documentation###
+
+[http://godoc.org/github.com/vimeo/go-magic/magic](http://godoc.org/github.com/vimeo/go-magic/magic)
