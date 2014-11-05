@@ -17,11 +17,11 @@ go get github.com/vimeo/go-magic/magic
 
 ###Usage###
 
-- Checkout custom magic files from https://github.vimeows.com/Vimeo/mime-mine
+- Create some custom magic files (e.g. ~/magicfiles)
 - Add the default system magic file dir
     - magic.AddMagicDir(magic.GetDefaultDir())
 - Add the custom magic file dir
-    - magic.AddMagicDir("/home/vimeo/mime-mine")
+    - magic.AddMagicDir("~/magicfiles")
 - Get MIME type with either one of:
     - magic.MimeFromFile(filename)
     - magic.MimeFromBytes(data)
