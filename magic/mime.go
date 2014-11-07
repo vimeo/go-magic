@@ -43,6 +43,12 @@ func compileMagicFiles(dir string, files []string) {
 
 /* Add a directory for libmagic to search for .mgc databases. */
 func AddMagicDir(dir string) error {
+    var err error
+
+    dir, err = filepath.Abs(dir)
+    if err != nil {
+        return err
+    }
     fi, err := os.Stat(dir)
     if err != nil {
         return err
