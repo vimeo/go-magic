@@ -6,9 +6,15 @@ import (
     "os"
     "path"
     "strings"
+    "sync"
 )
 
-var magicFiles []string
+var magicFiles map[string]bool
+var mutex sync.Mutex
+
+func init() {
+    magicFiles = make(map[string]bool)
+}
 
 func compileToMgc(file string) {
     cookie := Open(MAGIC_NONE)
@@ -69,12 +75,14 @@ func AddMagicDir(dir string) error {
     if err != nil {
         return err
     }
+    mutex.Lock()
     for _, fi = range files {
         if path.Ext(fi.Name()) == ".mgc" {
             mgcFile := path.Join(dir, fi.Name())
-            magicFiles = append(magicFiles, mgcFile)
+            magicFiles[mgcFile] = true
         }
     }
+    mutex.Unlock()
 
     return nil
 }
@@ -83,7 +91,13 @@ func AddMagicDir(dir string) error {
 func MimeFromFile(path string) string {
     cookie := Open(MAGIC_ERROR | MAGIC_MIME_TYPE)
     defer Close(cookie)
-    ret := Load(cookie, strings.Join(magicFiles, ":"))
+    mutex.Lock()
+    var mf []string
+    for f := range magicFiles {
+        mf = append(mf, f)
+    }
+    mutex.Unlock()
+    ret := Load(cookie, strings.Join(mf, ":"))
     if ret != 0 {
         return "application/octet-stream"
     }
@@ -95,7 +109,13 @@ func MimeFromFile(path string) string {
 func MimeFromBytes(b []byte) string {
     cookie := Open(MAGIC_ERROR | MAGIC_MIME_TYPE)
     defer Close(cookie)
-    ret := Load(cookie, strings.Join(magicFiles, ":"))
+    mutex.Lock()
+    var mf []string
+    for f := range magicFiles {
+        mf = append(mf, f)
+    }
+    mutex.Unlock()
+    ret := Load(cookie, strings.Join(mf, ":"))
     if ret != 0 {
         return "application/octet-stream"
     }
