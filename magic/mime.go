@@ -4,7 +4,7 @@ import (
     "fmt"
     "io/ioutil"
     "os"
-    "path"
+    "path/filepath"
     "strings"
     "sync"
 )
@@ -58,8 +58,8 @@ func AddMagicDir(dir string) error {
         return err
     }
     for _, fi = range files {
-        if path.Ext(fi.Name()) == ".magic" {
-            mgcSrc := path.Join(dir, fi.Name())
+        if filepath.Ext(fi.Name()) == ".magic" {
+            mgcSrc := filepath.Join(dir, fi.Name())
             _, err := os.Stat(mgcSrc + ".mgc")
             if err != nil {
                 srcFiles = append(srcFiles, mgcSrc)
@@ -77,8 +77,8 @@ func AddMagicDir(dir string) error {
     }
     mutex.Lock()
     for _, fi = range files {
-        if path.Ext(fi.Name()) == ".mgc" {
-            mgcFile := path.Join(dir, fi.Name())
+        if filepath.Ext(fi.Name()) == ".mgc" {
+            mgcFile := filepath.Join(dir, fi.Name())
             magicFiles[mgcFile] = true
         }
     }
