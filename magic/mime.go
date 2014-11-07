@@ -10,23 +10,33 @@ import (
 
 var magicFiles []string
 
-func compileToMgc(file string) error {
+func compileToMgc(file string) {
     cookie := Open(MAGIC_NONE)
     defer Close(cookie)
-    ret := Compile(cookie, file)
-    if ret != 0 {
-        return fmt.Errorf("Error compiling magic file: %s", file)
+    Compile(cookie, file)
+}
+
+func compileMagicFiles(dir string, files []string) {
+    // for some reason libmagic puts compiled files in the current working dir
+    // instead of the dir of the source file, so switch to the source dir,
+    // compile, then switch back
+    pwd, err := os.Getwd()
+    if err != nil {
+        return
     }
-    return nil
+    err = os.Chdir(dir)
+    if err != nil {
+        return
+    }
+    defer os.Chdir(pwd)
+
+    for _, f := range files {
+        compileToMgc(f)
+    }
 }
 
 /* Add a directory for libmagic to search for .mgc databases. */
 func AddMagicDir(dir string) error {
-    pwd, err := os.Getwd()
-    if err != nil {
-        return err
-    }
-
     fi, err := os.Stat(dir)
     if err != nil {
         return err
@@ -34,10 +44,9 @@ func AddMagicDir(dir string) error {
     if fi.IsDir() == false {
         return fmt.Errorf("Not a directory: %s", dir)
     }
-    err = os.Chdir(dir)
-    if err != nil {
-        return err
-    }
+
+    // get list of .magic files that need to be compiled to .mgc
+    var srcFiles []string
     files, err := ioutil.ReadDir(dir)
     if err != nil {
         return err
@@ -47,10 +56,15 @@ func AddMagicDir(dir string) error {
             mgcSrc := path.Join(dir, fi.Name())
             _, err := os.Stat(mgcSrc + ".mgc")
             if err != nil {
-                compileToMgc(path.Join(dir, fi.Name()))
+                srcFiles = append(srcFiles, mgcSrc)
             }
         }
     }
+    // compile .magic files
+    if len(srcFiles) > 0 {
+        compileMagicFiles(dir, srcFiles)
+    }
+
     files, err = ioutil.ReadDir(dir)
     if err != nil {
         return err
@@ -61,10 +75,7 @@ func AddMagicDir(dir string) error {
             magicFiles = append(magicFiles, mgcFile)
         }
     }
-    err = os.Chdir(pwd)
-    if err != nil {
-        return err
-    }
+
     return nil
 }
 
