@@ -125,7 +125,7 @@ func Compile(cookie Magic, filename string) int {
 
 func Load(cookie Magic, filename string) int {
     if filename == "" {
-        return (int)(C.magic_load(cookie, (*C.char)(unsafe.Pointer(uintptr(0)))))
+        return (int)(C.magic_load(cookie, nil))
     }
     cfilename := C.CString(filename)
     defer C.free(unsafe.Pointer(cfilename))
