@@ -1,21 +1,21 @@
 # go-magic #
 
-##Go library for getting MIME type using libmagic##
+## Go library for getting MIME type using libmagic ##
 
-###Installing###
+### Installing ###
 
 ```
 go get github.com/vimeo/go-magic/magic
 ```
 
-###Dependencies###
+### Dependencies ###
 
 **libmagic**<br />
 *URL*: [http://www.darwinsys.com/file/](http://www.darwinsys.com/file/)<br />
 *Ubuntu*: `apt-get install libmagic-dev`<br />
 *CentOS*: `yum install file-devel`<br />
 
-###Usage###
+### Usage ###
 
 - Create some custom magic files (e.g. ~/magicfiles)
 - Add the default system magic file dir
@@ -26,6 +26,6 @@ go get github.com/vimeo/go-magic/magic
     - magic.MimeFromFile(filename)
     - magic.MimeFromBytes(data)
 
-###API Documentation###
+### API Documentation ###
 
 [http://godoc.org/github.com/vimeo/go-magic/magic](http://godoc.org/github.com/vimeo/go-magic/magic)
