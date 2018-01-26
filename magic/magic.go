@@ -99,35 +99,35 @@ func Errno(cookie Magic) int {
 func File(cookie Magic, filename string) string {
 	cfilename := C.CString(filename)
 	defer C.free(unsafe.Pointer(cfilename))
-	return C.GoString(C.magic_file(cookie, cfilename))
+	return C.GoString(C.magic_file((C.magic_t)(cookie), cfilename))
 }
 
 func Buffer(cookie Magic, b []byte) string {
 	length := C.size_t(len(b))
-	return C.GoString(C.magic_buffer(cookie, unsafe.Pointer(&b[0]), length))
+	return C.GoString(C.magic_buffer((C.magic_t)(cookie), unsafe.Pointer(&b[0]), length))
 }
 
 func SetFlags(cookie Magic, flags int) int {
-	return (int)(C.magic_setflags(cookie, C.int(flags)))
+	return (int)(C.magic_setflags((C.magic_t)(cookie), C.int(flags)))
 }
 
 func Check(cookie Magic, filename string) int {
 	cfilename := C.CString(filename)
 	defer C.free(unsafe.Pointer(cfilename))
-	return (int)(C.magic_check(cookie, cfilename))
+	return (int)(C.magic_check((C.magic_t)(cookie), cfilename))
 }
 
 func Compile(cookie Magic, filename string) int {
 	cfilename := C.CString(filename)
 	defer C.free(unsafe.Pointer(cfilename))
-	return (int)(C.magic_compile(cookie, cfilename))
+	return (int)(C.magic_compile((C.magic_t)(cookie), cfilename))
 }
 
 func Load(cookie Magic, filename string) int {
 	if filename == "" {
-		return (int)(C.magic_load(cookie, nil))
+		return (int)(C.magic_load((C.magic_t)(cookie), nil))
 	}
 	cfilename := C.CString(filename)
 	defer C.free(unsafe.Pointer(cfilename))
-	return (int)(C.magic_load(cookie, cfilename))
+	return (int)(C.magic_load((C.magic_t)(cookie), cfilename))
 }
